@@ -9,6 +9,7 @@ from sandbox.rocky.tf.misc import tensor_utils
 from rllab.misc.overrides import overrides
 from sandbox.rocky.tf.spaces.discrete import Discrete
 import tensorflow as tf
+import numpy as np 
 
 
 class CategoricalMLPPolicy(StochasticPolicy, LayersPowered, Serializable):
@@ -30,9 +31,9 @@ class CategoricalMLPPolicy(StochasticPolicy, LayersPowered, Serializable):
         """
         Serializable.quick_init(self, locals())
 
-        assert isinstance(env_spec.action_space, Discrete)
+        # assert isinstance(env_spec.action_space, Discrete)
 
-        with tf.variable_scope(name):
+        with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
             if prob_network is None:
                 prob_network = MLP(
                     input_shape=(env_spec.observation_space.flat_dim,),
@@ -79,9 +80,13 @@ class CategoricalMLPPolicy(StochasticPolicy, LayersPowered, Serializable):
         return action, dict(prob=prob)
 
     def get_actions(self, observations):
-        flat_obs = self.observation_space.flatten_n(observations)
+        # flat_obs = self.observation_space.flatten_n(observations)
+        flat_obs = observations
         probs = self._f_prob(flat_obs)
-        actions = list(map(self.action_space.weighted_sample, probs))
+        # actions = list(map(self.action_space.weighted_sample, probs))
+        # actions = list(map(self.action_space.weighted_sample, probs))
+        # import pdb; pdb.set_trace()
+        actions = np.random.choice(a=range(self.action_space.n), p=probs.squeeze())
         return actions, dict(prob=probs)
 
     @property

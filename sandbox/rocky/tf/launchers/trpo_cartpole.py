@@ -17,6 +17,7 @@ policy = GaussianMLPPolicy(
     hidden_sizes=(32, 32)
 )
 
+import pdb; pdb.set_trace()
 baseline = LinearFeatureBaseline(env_spec=env.spec)
 
 algo = TRPO(
