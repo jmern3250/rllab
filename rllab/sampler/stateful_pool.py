@@ -117,6 +117,7 @@ class StatefulPool(object):
         :param threshold:
         :return:
         """
+
         if args is None:
             args = tuple()
         if self.pool:

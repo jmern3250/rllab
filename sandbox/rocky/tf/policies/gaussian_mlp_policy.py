@@ -53,9 +53,9 @@ class GaussianMLPPolicy(StochasticPolicy, LayersPowered, Serializable):
         :return:
         """
         Serializable.quick_init(self, locals())
-        assert isinstance(env_spec.action_space, Box)
+        # assert isinstance(env_spec.action_space, Box)
 
-        with tf.variable_scope(name):
+        with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
 
             obs_dim = env_spec.observation_space.flat_dim
             action_dim = env_spec.action_space.flat_dim
@@ -157,14 +157,16 @@ class GaussianMLPPolicy(StochasticPolicy, LayersPowered, Serializable):
 
     @overrides
     def get_action(self, observation):
-        flat_obs = self.observation_space.flatten(observation)
+        # flat_obs = self.observation_space.flatten(observation)
+        flat_obs = observations
         mean, log_std = [x[0] for x in self._f_dist([flat_obs])]
         rnd = np.random.normal(size=mean.shape)
         action = rnd * np.exp(log_std) + mean
         return action, dict(mean=mean, log_std=log_std)
 
     def get_actions(self, observations):
-        flat_obs = self.observation_space.flatten_n(observations)
+        # flat_obs = self.observation_space.flatten_n(observations)
+        flat_obs = observations
         means, log_stds = self._f_dist(flat_obs)
         rnd = np.random.normal(size=means.shape)
         actions = rnd * np.exp(log_stds) + means

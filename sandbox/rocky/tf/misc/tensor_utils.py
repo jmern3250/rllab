@@ -51,7 +51,7 @@ def concat_tensor_dict_list(tensor_dict_list):
 
 
 def stack_tensor_list(tensor_list):
-    return np.array(tensor_list)
+    return np.array(tensor_list).squeeze()
     # tensor_shape = np.array(tensor_list[0]).shape
     # if tensor_shape is tuple():
     #     return np.array(tensor_list)
